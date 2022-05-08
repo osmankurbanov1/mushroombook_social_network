@@ -41,9 +41,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'drf_yasg',
+    'mptt',
     # Local
     'profiles',
     'api',
+    'wall',
+    'comments',
 ]
 
 MIDDLEWARE = [
