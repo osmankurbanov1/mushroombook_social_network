@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import MyUser
-from django.utils.translation import gettext, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 # Register your models here.
@@ -17,7 +17,7 @@ class MyUserAdmin(UserAdmin):
         }),
         (_('Important dates'), {'fields': ('first_login', 'last_login', 'date_joined')}),
         # Additional fields
-        (_('Additional info'), {'fields': ('phone', 'avatar', 'bio', 'gender', )}),
+        (_('Additional info'), {'fields': ('user_photo', 'user_gender', 'bio')}),
     )
 
 
