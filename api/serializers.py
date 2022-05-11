@@ -2,6 +2,28 @@ from rest_framework import serializers
 
 from profiles.models import MyUser
 from wall.models import Post, Comment
+from followers.models import Follower
+
+
+class FollowerSerializer(serializers.ModelSerializer):
+    """
+    Serializing Followers
+    """
+
+    class Meta:
+        model = Follower
+        fields = ['id', 'user', 'follower_user']
+
+
+class ListFollowerSerializer(serializers.ModelSerializer):
+    """
+    Serializing list of Followers
+    """
+    followers = FollowerSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Follower
+        fields = ['followers']
 
 
 class UserSerializer(serializers.ModelSerializer):
