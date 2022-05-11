@@ -196,3 +196,6 @@ misc/dbdata/
 .vscode
 _static/
 report.xml
+
+# .idea folder
+.idea/
