@@ -38,17 +38,18 @@ class FollowerView(viewsets.ModelViewSet):
         try:
             user = MyUser.objects.get(id=kwargs['pk'])
         except Follower.DoesNotExist:
-            return response.Response({'message': 'no user with this pk'}, status=404)
+            return response.Response(status=404)
         Follower.objects.create(follower_user=request.user, user=user)
-        return response.Response({'message': 'now you are following'}, status=201)
+        return response.Response({'message': f'"{request.user} followed to {user}"'}, status=201)
+
 
     def destroy(self, request, *args, **kwargs):
         try:
-            follower = Follower.objects.get(follower_user=request.user, user_id=kwargs['pk'])
+            user = Follower.objects.get(follower_user=request.user, user_id=kwargs['pk'])
         except Follower.DoesNotExist:
-            return response.Response({'message': 'no user with this pk'}, status=404)
-        follower.delete()
-        return response.Response({'message': 'and now you unfollowing'}, status=204)
+            return response.Response(status=404)
+        user.delete()
+        return response.Response({'message': 'unfollowed'}, status=204)
 
 
 class UsersProfileView(RetrieveUpdateAPIView):
