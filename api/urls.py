@@ -12,4 +12,8 @@ urlpatterns = [
     })),
     path('comments/', views.CommentListCreateView.as_view()),
     path('comments/<int:pk>/', views.CommentsView.as_view()),
+    path('followers/', views.ListFollowerView.as_view()),
+    path('followers/<int:pk>/', views.FollowerView.as_view(
+        {'post': 'create', 'delete': 'destroy'}
+    )),
 ]
