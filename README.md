@@ -4,7 +4,7 @@
 
 ##### Dependencies
 
-All requirements are listed in the file: `requirements.txt`.
+All requirements are listed in the file: `requirements.txt`
 
 ##### Technologies
 
