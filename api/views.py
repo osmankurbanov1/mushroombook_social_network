@@ -2,12 +2,53 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView,
     ListAPIView,
     )
-from rest_framework import permissions, mixins, viewsets
+from rest_framework import permissions, viewsets, response
 
-from .serializers import UserSerializer, PostSerializer, CommentSerializer
+from .serializers import (
+    UserSerializer, PostSerializer, CommentSerializer,
+    FollowerSerializer
+)
 from .permissions import IsProfileOwnerOrReadOnly, IsPostAuthorOrReadOnly, IsCommentAuthorOrReadOnly
 from profiles.models import MyUser
 from wall.models import Post, Comment
+from followers.models import Follower
+
+
+class ListFollowerView(ListAPIView):
+    """
+    Get the list of current user followers
+    """
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = FollowerSerializer
+
+    def get_queryset(self):
+        return Follower.objects.filter(user=self.request.user)
+
+
+class FollowerView(viewsets.ModelViewSet):
+    """
+    (Create) Subscribe to the User /
+    (Destroy) Unsubscribe from the User
+    """
+    queryset = Follower.objects.all()
+    serializer_class = FollowerSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def create(self, request, *args, **kwargs):
+        try:
+            user = MyUser.objects.get(id=kwargs['pk'])
+        except Follower.DoesNotExist:
+            return response.Response({'message': 'no user with this pk'}, status=404)
+        Follower.objects.create(follower_user=request.user, user=user)
+        return response.Response({'message': 'now you are following'}, status=201)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            follower = Follower.objects.get(follower_user=request.user, user_id=kwargs['pk'])
+        except Follower.DoesNotExist:
+            return response.Response({'message': 'no user with this pk'}, status=404)
+        follower.delete()
+        return response.Response({'message': 'and now you unfollowing'}, status=204)
 
 
 class UsersProfileView(RetrieveUpdateAPIView):
@@ -35,7 +76,7 @@ class PostView(viewsets.ModelViewSet):
 
 class PostListView(ListAPIView):
     """
-    View list of user`s Posts
+    View list of user`s Posts by pk
     """
 
     serializer_class = PostSerializer
