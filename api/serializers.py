@@ -5,25 +5,14 @@ from wall.models import Post, Comment
 from followers.models import Follower
 
 
-class FollowerSerializer(serializers.ModelSerializer):
+class FollowingSerializer(serializers.ModelSerializer):
     """
     Serializing Followers
     """
 
     class Meta:
         model = Follower
-        fields = ['id', 'user', 'follower_user']
-
-
-class ListFollowerSerializer(serializers.ModelSerializer):
-    """
-    Serializing list of Followers
-    """
-    followers = FollowerSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Follower
-        fields = ['followers']
+        fields = ['id', 'following_user']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,11 +20,13 @@ class UserSerializer(serializers.ModelSerializer):
     Serializing all Users
     """
 
+    following = FollowingSerializer(read_only=True, many=True)
+
     class Meta:
         model = MyUser
         fields = (
             "id", "username", "first_name", "last_name", "user_gender", "user_photo",
-            "bio", "date_joined", "last_login", "first_login",
+            "bio", "date_joined", "last_login", "first_login", "following",
             )
 
 
