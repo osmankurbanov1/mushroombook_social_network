@@ -15,4 +15,5 @@ urlpatterns = [
     path('followers/<int:pk>/', views.FollowerView.as_view(
         {'post': 'create', 'delete': 'destroy'}
     )),
+    path('feed/', views.FeedView.as_view()),
 ]
