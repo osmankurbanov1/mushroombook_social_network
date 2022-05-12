@@ -14,6 +14,18 @@ from wall.models import Post, Comment
 from followers.models import Follower
 
 
+class FeedView(ListAPIView):
+    """
+    List of following users posts
+    """
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        return Post.objects.filter(post_author__followers__follower_user=self.request.user). \
+            order_by('-post_created_date').prefetch_related('comments')
+
+
 class FollowerView(viewsets.ModelViewSet):
     """
     (Create) Subscribe to the User /
