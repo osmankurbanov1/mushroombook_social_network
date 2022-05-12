@@ -7,12 +7,22 @@ from followers.models import Follower
 
 class FollowingSerializer(serializers.ModelSerializer):
     """
-    Serializing Followers
+    Serializing Following users
     """
 
     class Meta:
         model = Follower
         fields = ['id', 'following_user']
+
+
+class FollowerSerializer(serializers.ModelSerializer):
+    """
+    Serializing Followers
+    """
+
+    class Meta:
+        model = Follower
+        fields = ['id', 'follower_user']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,12 +31,13 @@ class UserSerializer(serializers.ModelSerializer):
     """
 
     following = FollowingSerializer(read_only=True, many=True)
+    followers = FollowerSerializer(read_only=True, many=True)
 
     class Meta:
         model = MyUser
         fields = (
             "id", "username", "first_name", "last_name", "user_gender", "user_photo",
-            "bio", "date_joined", "last_login", "first_login", "following",
+            "bio", "date_joined", "last_login", "first_login", "following", "followers"
             )
 
 
