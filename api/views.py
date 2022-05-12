@@ -14,19 +14,6 @@ from wall.models import Post, Comment
 from followers.models import Follower
 
 
-class ListFollowerView(ListAPIView):
-    """
-    Get the list of current user followers
-    """
-    permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = FollowingSerializer
-
-    def get_queryset(self):
-        # user = MyUser.objects.get(id=self.request.user.id)
-        # return user.following.all()
-        return Follower.objects.filter(user=self.request.user)
-
-
 class FollowerView(viewsets.ModelViewSet):
     """
     (Create) Subscribe to the User /
@@ -41,22 +28,21 @@ class FollowerView(viewsets.ModelViewSet):
             user = MyUser.objects.get(id=kwargs['pk'])
         except Follower.DoesNotExist:
             return response.Response(status=404)
-        Follower.objects.create(follower_user=request.user, user=user)
+        Follower.objects.create(follower_user=request.user, following_user=user)
         return response.Response({'message': f'"{request.user} followed to {user}"'}, status=201)
-
 
     def destroy(self, request, *args, **kwargs):
         try:
-            user = Follower.objects.get(follower_user=request.user, user_id=kwargs['pk'])
+            user = Follower.objects.get(follower_user=request.user, following_user_id=kwargs['pk'])
         except Follower.DoesNotExist:
             return response.Response(status=404)
         user.delete()
         return response.Response({'message': 'unfollowed'}, status=204)
 
 
-class UsersProfileView(RetrieveUpdateAPIView):
+class UserProfileView(RetrieveUpdateAPIView):
     """
-    Get/update the User
+    Get/update the User Profile
     """
     queryset = MyUser.objects.all()
     serializer_class = UserSerializer
