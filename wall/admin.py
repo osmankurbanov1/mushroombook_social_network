@@ -9,7 +9,7 @@ class PostAdmin(admin.ModelAdmin):
     """
     Posts
     """
-    list_display = ("post_author", "post_is_published", "count_of_post_views")
+    list_display = ("post_author", "post_is_published", "list_of_mushrooms", "post_description")
 
 
 class CommentAdmin(MPTTModelAdmin, admin.ModelAdmin):
