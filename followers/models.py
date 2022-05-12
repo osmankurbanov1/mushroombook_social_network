@@ -7,7 +7,7 @@ class Follower(models.Model):
     follower_user follows user
     """
     # Who follows - follower_user
-    follower_user = models.ForeignKey(
+    following_user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='following',
         verbose_name='Who follows'
                                       )
@@ -20,4 +20,4 @@ class Follower(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return f'{self.follower_user} follows {self.user}'
+        return f'{self.following_user} follows {self.user}'
