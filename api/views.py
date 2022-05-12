@@ -6,7 +6,7 @@ from rest_framework import permissions, viewsets, response
 
 from .serializers import (
     UserSerializer, PostSerializer, CommentSerializer,
-    FollowerSerializer
+    FollowingSerializer,
 )
 from .permissions import IsProfileOwnerOrReadOnly, IsPostAuthorOrReadOnly, IsCommentAuthorOrReadOnly
 from profiles.models import MyUser
@@ -19,9 +19,11 @@ class ListFollowerView(ListAPIView):
     Get the list of current user followers
     """
     permission_classes = (permissions.IsAuthenticated, )
-    serializer_class = FollowerSerializer
+    serializer_class = FollowingSerializer
 
     def get_queryset(self):
+        # user = MyUser.objects.get(id=self.request.user.id)
+        # return user.following.all()
         return Follower.objects.filter(user=self.request.user)
 
 
@@ -31,7 +33,7 @@ class FollowerView(viewsets.ModelViewSet):
     (Destroy) Unsubscribe from the User
     """
     queryset = Follower.objects.all()
-    serializer_class = FollowerSerializer
+    serializer_class = FollowingSerializer
     permission_classes = (permissions.IsAuthenticated, )
 
     def create(self, request, *args, **kwargs):
