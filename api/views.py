@@ -49,7 +49,7 @@ class FollowerView(viewsets.ModelViewSet):
         except Follower.DoesNotExist:
             return response.Response(status=404)
         user.delete()
-        return response.Response({'message': 'unfollowed'}, status=204)
+        return response.Response({'message': 'unfollowed'}, status=200)
 
 
 class UserProfileView(RetrieveUpdateAPIView):
@@ -70,9 +70,6 @@ class PostView(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsPostAuthorOrReadOnly, )
-
-    def perform_create(self, serializer):
-        serializer.save(post_author=self.request.user)
 
 
 class PostListView(ListAPIView):
