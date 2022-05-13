@@ -50,3 +50,11 @@ class Comment(AbstractComment, MPTTModel):
 
     def __str__(self):
         return f'{self.comment_author} - {self.post}'
+
+
+class PostImage(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+    image = models.FileField(upload_to='MEDIA_IMAGE_DIR/post_images/')
+
+    def __str__(self):
+        return f'Image(s) for {self.post}'
