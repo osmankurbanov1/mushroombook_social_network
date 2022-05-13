@@ -1,8 +1,14 @@
 from rest_framework import serializers
 
 from profiles.models import MyUser
-from wall.models import Post, Comment
+from wall.models import Post, Comment, PostImage
 from followers.models import Follower
+
+
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ('image', )
 
 
 class FollowingSerializer(serializers.ModelSerializer):
@@ -12,7 +18,7 @@ class FollowingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Follower
-        fields = ['id', 'following_user']
+        fields = ('id', 'following_user')
 
 
 class FollowerSerializer(serializers.ModelSerializer):
@@ -22,7 +28,7 @@ class FollowerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Follower
-        fields = ['id', 'follower_user']
+        fields = ('id', 'follower_user')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -62,11 +68,26 @@ class PostSerializer(serializers.ModelSerializer):
     post_author = serializers.ReadOnlyField(source='user.username')
     post_is_published = serializers.ReadOnlyField(default=True)
     comments = CommentSerializer(read_only=True, many=True)
+    images = PostImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
         fields = (
             "id", "post_created_date", "post_is_published",
             "post_author", "post_description", "list_of_mushrooms",
-            "comments",
+            "comments", "images",
             )
+
+    def create(self, validated_data):
+
+        images_mv_dict = self.context.get('view').request.FILES
+        request = self.context.get('request', None)
+        post = Post.objects.create(post_description=validated_data.get('post_description'),
+                                   post_author=request.user,
+                                   list_of_mushrooms=validated_data.get('list_of_mushrooms'))
+
+        for image_key in images_mv_dict.keys():
+            for image in images_mv_dict.getlist(image_key):
+                PostImage.objects.create(post=post, image=image)
+
+        return post
