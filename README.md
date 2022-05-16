@@ -1,6 +1,6 @@
 ## The mushroombook - Social network
 
-* The back-end API of the mushroombook
+* The back-end API of the Mushroombook project
 
 ##### Dependencies
 
