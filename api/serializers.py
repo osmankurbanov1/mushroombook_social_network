@@ -1,8 +1,16 @@
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
+
 
 from profiles.models import MyUser
-from wall.models import Post, Comment, PostImage
+from wall.models import Post, Comment, PostImage, PostLike
 from followers.models import Follower
+
+
+class PostLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostLike
+        fields = ('user_liked', 'post')
 
 
 class PostImageSerializer(serializers.ModelSerializer):
@@ -69,14 +77,18 @@ class PostSerializer(serializers.ModelSerializer):
     post_is_published = serializers.ReadOnlyField(default=True)
     comments = CommentSerializer(read_only=True, many=True)
     images = PostImageSerializer(many=True, read_only=True)
+    total_likes = SerializerMethodField()
 
     class Meta:
         model = Post
         fields = (
             "id", "post_created_date", "post_is_published",
             "post_author", "post_description", "list_of_mushrooms",
-            "comments", "images",
+            "comments", "images", "total_likes"
             )
+
+    def get_total_likes(self, instance):
+        return instance.likes.count()
 
     def create(self, validated_data):
 
