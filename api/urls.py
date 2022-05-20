@@ -16,4 +16,7 @@ urlpatterns = [
         {'post': 'create', 'delete': 'destroy'}
     )),
     path('feed/', views.FeedView.as_view()),
+    path('likes/<int:pk>/', views.LikeCreateDestroyView.as_view(
+        {'post': 'create', 'delete': 'destroy'}
+    ))
 ]
