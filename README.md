@@ -11,3 +11,6 @@ All requirements are listed in the file: `requirements.txt`
 * Python >= 3.8
 * Django REST Framework
 * PostgreSQL
+
+
+![alt text](screenshots/mushroombook_postman.png "The screenshot")
