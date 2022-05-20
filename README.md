@@ -12,6 +12,6 @@ All requirements are listed in the file: `requirements.txt`
 * Django REST Framework
 * PostgreSQL
 
-Below is the result of retrieving some Post as example of response
+Below is the result of retrieving some Post as an example of a some response
 
 ![alt text](screenshots/mushroombook_postman.png "The screenshot")
