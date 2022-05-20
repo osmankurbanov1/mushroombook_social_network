@@ -4,14 +4,49 @@ from rest_framework.generics import (
     )
 from rest_framework import permissions, viewsets, response
 
+from rest_framework.pagination import PageNumberPagination
+
 from .serializers import (
     UserSerializer, PostSerializer, CommentSerializer,
-    FollowingSerializer,
+    FollowingSerializer, PostLikeSerializer
 )
 from .permissions import IsProfileOwnerOrReadOnly, IsPostAuthorOrReadOnly, IsCommentAuthorOrReadOnly
 from profiles.models import MyUser
-from wall.models import Post, Comment
+from wall.models import Post, Comment, PostLike
 from followers.models import Follower
+
+
+class LikeCreateDestroyView(viewsets.ModelViewSet):
+    """
+    (Create) Like Post /
+    (Destroy) Unlike Post
+    """
+    queryset = PostLike.objects.all()
+    serializer_class = PostLikeSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def create(self, request, *args, **kwargs):
+        try:
+            post = Post.objects.get(id=kwargs['pk'])
+        except Post.DoesNotExist:
+            return response.Response(status=404)
+
+        PostLike.objects.create(post=post, user_liked=request.user)
+        return response.Response({'message': f'"{request.user} liked {post}"'}, status=201)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            like = PostLike.objects.get(post_id=kwargs['pk'], user_liked=request.user)
+        except Follower.DoesNotExist:
+            return response.Response(status=404)
+        like.delete()
+        return response.Response({'message': 'unliked'}, status=200)
+
+
+class PostListFeedPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 50
 
 
 class FeedView(ListAPIView):
@@ -20,6 +55,7 @@ class FeedView(ListAPIView):
     """
     permission_classes = (permissions.IsAuthenticated, )
     serializer_class = PostSerializer
+    pagination_class = PostListFeedPagination
 
     def get_queryset(self):
         return Post.objects.filter(post_author__followers__follower_user=self.request.user). \
