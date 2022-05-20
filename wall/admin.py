@@ -2,7 +2,14 @@ from django.contrib import admin
 
 from mptt.admin import MPTTModelAdmin
 
-from .models import Post, Comment
+from wall.models import Post, Comment, PostLike
+
+
+class PostLikeAdmin(admin.ModelAdmin):
+    """
+    Likes
+    """
+    # list_display = ("post", "user_liked")
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -20,5 +27,6 @@ class CommentAdmin(MPTTModelAdmin, admin.ModelAdmin):
     mptt_level_indent = 10
 
 
+admin.site.register(PostLike, PostLikeAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
