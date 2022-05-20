@@ -58,3 +58,17 @@ class PostImage(models.Model):
 
     def __str__(self):
         return f'Image(s) for {self.post}'
+
+
+class PostLike(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    # who liked the post
+    user_liked = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Who liked')
+
+    def __str__(self):
+        return f'{self.user_liked} liked {self.post}'
+
+    objects = models.Manager()
+
+    class Meta:
+        unique_together = (('post', 'user_liked'), )
