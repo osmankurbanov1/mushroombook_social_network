@@ -12,6 +12,10 @@ All requirements are listed in the file: `requirements.txt`
 * Django REST Framework
 * PostgreSQL
 
-Below is the result of retrieving some Post as an example of some response
+##### Run the project
 
-![alt text](screenshots/mushroombook_postman.png "The screenshot")
+`python manage.py runserver`
+
+##### API Documantaion
+
+`http://127.0.0.1:8000/swagger/`
